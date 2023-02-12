@@ -8,11 +8,14 @@ public class Question {
     private final List<String> mChoiceList; // liste des réponses proposées
     private final int mAnswerIndex; //l'index de la réponse dans la liste précédente
 
+    private final int indiceTemporaire;
 
-    public Question(String question, List<String> choiceList, int answerIndex) {
+    public Question(String question, List<String> choiceList, int answerIndex, int indiceTemporaire) {
         mQuestion = question;
         mChoiceList = choiceList;
         mAnswerIndex = answerIndex;
+
+        this.indiceTemporaire = indiceTemporaire;
     }
 
     public String getQuestion() {
@@ -25,5 +28,9 @@ public class Question {
 
     public int getAnswerIndex() {
         return mAnswerIndex;
+    }
+
+    public int getIndiceTemporaire() {
+        return indiceTemporaire;
     }
 }

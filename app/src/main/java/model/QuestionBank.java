@@ -19,28 +19,37 @@ public class QuestionBank {
      */
     public QuestionBank(List<Question> questionList) {
         Collections.shuffle(questionList);
-        System.out.println(questionList);
+        System.out.println("Affichage de la liste des questions" + questionList);
         this.mQuestionList = questionList;
     }
 
+    public void questionBankShuflle(List<Question> questionList) {
+        Collections.shuffle(questionList);
+        System.out.println("Affichage de la liste des questions" + questionList);
+        this.mQuestionList = questionList;
+    }
     /**
      *  // Boucle sur les questions et renvoie une nouvelle question à chaque appel.
      * @return
      */
     public Question getNextQuestion() {
 
-        Question prochaineQuesion = null;
+        Question prochaineQuesion;
 
         if(this.mNextQuestionIndex<this.mQuestionList.size()){
             prochaineQuesion = this.mQuestionList.get(mNextQuestionIndex);
             this.mNextQuestionIndex +=1;
+        }
+        else {
+            this.mNextQuestionIndex =0;
+            prochaineQuesion = this.mQuestionList.get(mNextQuestionIndex);
         }
         return prochaineQuesion;
 
     }
 
     public List<Question> getQuestionList() {
-        return mQuestionList;
+            return mQuestionList;
     }
 
     public void setQuestionList(List<Question> questionList) {
@@ -54,4 +63,6 @@ public class QuestionBank {
     public void setNextQuestionIndex(int nextQuestionIndex) {
         mNextQuestionIndex = nextQuestionIndex;
     }
+
+
 }

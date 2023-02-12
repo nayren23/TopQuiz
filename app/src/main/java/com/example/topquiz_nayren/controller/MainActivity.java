@@ -1,5 +1,8 @@
 package com.example.topquiz_nayren.controller;
 
+import static com.example.topquiz_nayren.controller.GameActivity.BUNDLE_EXTRA_SCORE;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -23,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private Button mPlayButton;
 
     private User mUser;
+
+    private static final int GAME_ACTIVITY_REQUEST_CODE = 42;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +62,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                i=0;
+                i1=0;
+                i2=0;
             }
 
             /**
@@ -71,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         /**
          * Pour détecter que l'utilisateur a cliqué sur le bouton, il est nécessaire
          * d'implémenter un View.OnClickListener
@@ -80,18 +88,29 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent gameActivityIntent = new Intent(MainActivity.this, GameActivity.class);
-                startActivity(gameActivityIntent);
+                startActivityForResult(gameActivityIntent, GAME_ACTIVITY_REQUEST_CODE);
                 mUser.setFisrtName(mNameEditText.getText().toString()); //On change le prénom du joueur
                 /**
                  *  Pour créer une nouvelle Activity dans un projet, il faut :
-                     * o créer les fichiers ;
-                     * o créer le layout en XML ;
-                     * o modifier le Manifest pour y ajouter un élément “<activity>” portant son nom.
+                 * o créer les fichiers ;
+                 * o créer le layout en XML ;
+                 * o modifier le Manifest pour y ajouter un élément “<activity>” portant son nom.
                  *  Les Intents permettent de lancer de nouvelles Activity grâce à la
                  * méthode startActivity().
                  */
             }
+
         });
+
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(Integer.parseInt(BUNDLE_EXTRA_SCORE), resultCode, data);
+
+        if (GAME_ACTIVITY_REQUEST_CODE == requestCode && RESULT_OK == resultCode) {
+            // Fetch the score from the Intent
+            int score = data.getIntExtra(GameActivity.BUNDLE_EXTRA_SCORE, 0);
+        }
+    }
 }
