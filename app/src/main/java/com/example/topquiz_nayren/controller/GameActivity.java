@@ -1,11 +1,15 @@
 package com.example.topquiz_nayren.controller;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -13,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.topquiz_nayren.R;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -24,6 +29,12 @@ import model.QuestionBank;
  */
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String BUNDLE_STATE_SCORE = "BUNDLE_STATE_SCORE";
+    private static final String BUNDLE_STATE_QUESTION_COUNT = "BUNDLE_STATE_QUESTION_COUNT";
+    private static final String BUNDLE_STATE_QUESTION_BANK = "BUNDLE_STATE_QUESTION_BANK";
+
+    public static final String BUNDLE_STATE_QUESTION = "BUNDLE_STATE_QUESTION";
+    public static final String RESULT_SCORE = "RESULT_SCORE";
     private TextView mQuestionsTextView;
     private Button mAnswerButton1;
     private Button mAnswerButton2;
@@ -31,7 +42,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Button mAnswerButton4;
 
     private int mScore;
-    private QuestionBank getQuestionBank;
+    private QuestionBank getQuestionBank  ;
 
     private final QuestionBank mQuestionBank = generateQuestionBank();
 
@@ -39,6 +50,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private ArrayList<Integer> listetemporaireQuestionUtilise = new ArrayList<Integer>();
 
+    private boolean mEnableTouchEvents;
     private int mRemainingQuestionCount;
 
     public static final String BUNDLE_EXTRA_SCORE = "BUNDLE_EXTRA_SCORE";
@@ -46,9 +58,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mRemainingQuestionCount = 4 ;//on initialise le nb de questions
+        mRemainingQuestionCount = 2 ;//on initialise le nb de questions
         setContentView(R.layout.activity_game);
-
+        mEnableTouchEvents = true;
         mQuestionsTextView = findViewById(R.id.game_activity_question);
         mAnswerButton1 = findViewById(R.id.game_activity_button_1);
         mAnswerButton2 = findViewById(R.id.game_activity_button_2);
@@ -61,31 +73,20 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mAnswerButton2.setOnClickListener(this);
         mAnswerButton3.setOnClickListener(this);
         mAnswerButton4.setOnClickListener(this);
-        mRemainingQuestionCount--;
 
-        if (mRemainingQuestionCount > 0) {
-            this.questionActuelle = mQuestionBank.getNextQuestion();
-            displayQuestion(this.questionActuelle);
-        } else {
-            // No question left, end the game
-            Toast.makeText(this, "FIN DU JEUX 😢", Toast.LENGTH_LONG).show();
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Well done!").setMessage("Your score is " + mScore)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent();
-                            intent.putExtra(BUNDLE_EXTRA_SCORE, mScore);
-                            setResult(RESULT_OK, intent);
-                            finish();                        }
-                    })
-                    .create()
-                    .show();
-        }
-        this.questionActuelle= this.mQuestionBank.getNextQuestion();
+        getQuestionBank = mQuestionBank;
+        System.out.println("liste question départ " +mQuestionBank );
+        this.questionActuelle= this.getQuestionBank.getNextQuestion();
+        run();
 
         displayQuestion(this.questionActuelle);
-
+        if (savedInstanceState != null) {
+            mScore = savedInstanceState.getInt(BUNDLE_STATE_SCORE);
+            mRemainingQuestionCount = savedInstanceState.getInt(BUNDLE_STATE_QUESTION);
+        } else {
+            mScore = 0;
+            mRemainingQuestionCount = 2;
+        }
     }
 
     public QuestionBank generateQuestionBank() {
@@ -119,7 +120,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 ),
                 3,
                 2);
-        return new QuestionBank(Arrays.asList(question1, question2, question3));
+
+        Question question4 = new Question(
+                "C'est quoi le meilleur animé ?",
+                Arrays.asList(
+                        "SNK",
+                        "Vinland Saga",
+                        "Demons Slayer",
+                        "One piece"
+                ),
+                0,
+                1);
+        return new QuestionBank(Arrays.asList(question1, question2, question3,question4));
     }
 
     /**
@@ -135,6 +147,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         this.mAnswerButton3.setText(question.getChoiceList().get(2));
         this.mAnswerButton4.setText(question.getChoiceList().get(3));
     }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return mEnableTouchEvents && super.dispatchTouchEvent(ev);
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -154,29 +172,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         //verification reponses
         if(answerVerification(index)){
             this.mScore++;
-            Toast.makeText(this, "Correct 😍", Toast.LENGTH_LONG).show();
+            System.out.println("le score est de : " + this.mScore);
+            Toast.makeText(this, "Correct 😍" + this.mScore , Toast.LENGTH_SHORT).show();
         }
         else{
-            Toast.makeText(this, "Faux 😰", Toast.LENGTH_LONG).show();
-
+            Toast.makeText(this, "Faux 😰" + this.mScore , Toast.LENGTH_SHORT).show();
         }
-        this.listetemporaireQuestionUtilise.add(this.questionActuelle.getIndiceTemporaire());
+        mEnableTouchEvents = false;
+        suppressionQuestionsListe();
 
-        this.mQuestionBank.questionBankShuflle(this.mQuestionBank.getQuestionList());//on mélange les questions
-        this.questionActuelle = this.getQuestionBank.getNextQuestion();//on choisit la prochaine question
-
-
-        //verification de si on a deja poser la question
-        while(this.listetemporaireQuestionUtilise.contains(this.questionActuelle.getIndiceTemporaire())){
-            this.mQuestionBank.questionBankShuflle(this.mQuestionBank.getQuestionList());//on mélange les questions
-            this.questionActuelle = this.getQuestionBank.getNextQuestion();//on choisit la prochaine question
-        }
-
-        displayQuestion(this.questionActuelle);//on affiche les questions à l'écran
-    }
-
-    public void changementQuestions(){
-
+        run();
     }
 
 
@@ -188,4 +193,84 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public boolean answerVerification(int choixUseur){
         return this.questionActuelle.getAnswerIndex() == choixUseur;
     }
+
+    private void endGame() {
+        // No question left, end the game
+        Toast.makeText(this, "FIN DU JEUX 😢", Toast.LENGTH_LONG).show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Well done!").setMessage("Your score is " + mScore)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent();
+                        intent.putExtra(BUNDLE_EXTRA_SCORE, mScore);
+                        setResult(RESULT_OK, intent);
+                        finish();                        }
+                })
+                .create()
+                .show();
+    }
+
+    public void run() {
+        mEnableTouchEvents = true;
+
+        mRemainingQuestionCount--;
+        System.out.println("il reste " + mRemainingQuestionCount +"questions");
+        if (mRemainingQuestionCount <= 0) {
+            endGame();
+        } else {
+            System.out.println("je passe dans la prochaine question");
+            System.out.println("la liste des questions: " + getQuestionBank.getNextQuestion() );
+            displayQuestion( this.questionActuelle);
+        }
+    }
+
+    public  void suppressionQuestionsListe(){
+        this.listetemporaireQuestionUtilise.add(this.questionActuelle.getIndiceTemporaire());
+
+        this.getQuestionBank.questionBankShuflle(this.getQuestionBank.getQuestionList());//on mélange les questions
+        this.questionActuelle = this.getQuestionBank.getNextQuestion();//on choisit la prochaine question
+
+
+        //verification de si on a deja poser la question
+        while(this.listetemporaireQuestionUtilise.contains(this.questionActuelle.getIndiceTemporaire())){
+            this.getQuestionBank.questionBankShuflle(this.getQuestionBank.getQuestionList());//on mélange les questions
+            this.questionActuelle = this.getQuestionBank.getNextQuestion();//on choisit la prochaine question
+        }
+    }
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(BUNDLE_STATE_SCORE, mScore);
+        outState.putInt(BUNDLE_STATE_QUESTION_COUNT, mRemainingQuestionCount);
+        outState.putSerializable(BUNDLE_STATE_QUESTION_BANK, (Serializable) getQuestionBank);
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
 }

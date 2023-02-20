@@ -5,7 +5,9 @@ import static com.example.topquiz_nayren.controller.GameActivity.BUNDLE_EXTRA_SC
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,15 +21,20 @@ import com.example.topquiz_nayren.R;
 import model.User;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String SHARED_PREF_USER_INFO_NAME = "" ;
     //préfixer les attributs avec la lettre m (pour member en anglais)
     //les variables statiques sont préfixées par la lettre s.
     private TextView mGreetingTextView;
     private EditText mNameEditText;
     private Button mPlayButton;
 
-    private User mUser;
+    private TextView mwelcome_back_with_score;
 
-    private static final int GAME_ACTIVITY_REQUEST_CODE = 42;
+    private User mUser;
+    private static final String SHARED_PREF_USER_INFO_SCORE = "SHARED_PREF_USER_INFO_SCORE";
+
+    private static final int REQUEST_CODE_GAME_ACTIVITY = 42;
+    private static final String SHARED_PREF_USER_INFO = "SHARED_PREF_USER_INFO";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
 
         mPlayButton.setEnabled(false);
         mUser = new User();
+
+
         /**
          * il faut pouvoir être notifié lorsque l'utilisateur commence à saisir du texte
          * dans le champ EditText correspondant
@@ -57,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -84,33 +92,67 @@ public class MainActivity extends AppCompatActivity {
          * d'implémenter un View.OnClickListener
          */
         mPlayButton.setOnClickListener(new View.OnClickListener() {
-            // The user just clicked
             @Override
-            public void onClick(View view) {
-                Intent gameActivityIntent = new Intent(MainActivity.this, GameActivity.class);
-                startActivityForResult(gameActivityIntent, GAME_ACTIVITY_REQUEST_CODE);
+            public void onClick(View v) {
                 mUser.setFisrtName(mNameEditText.getText().toString()); //On change le prénom du joueur
-                /**
-                 *  Pour créer une nouvelle Activity dans un projet, il faut :
-                 * o créer les fichiers ;
-                 * o créer le layout en XML ;
-                 * o modifier le Manifest pour y ajouter un élément “<activity>” portant son nom.
-                 *  Les Intents permettent de lancer de nouvelles Activity grâce à la
-                 * méthode startActivity().
-                 */
+
+                // The user just clicked
+                getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE)
+                        .edit()
+                        .putString(SHARED_PREF_USER_INFO_NAME, mNameEditText.getText().toString())
+                        .apply();
+                startActivityForResult(new Intent(MainActivity.this, GameActivity.class), REQUEST_CODE_GAME_ACTIVITY);
             }
-
         });
-
+        greetUser();//pour que meme si on ferme l'app on garde en cache les infos de l'useur
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(Integer.parseInt(BUNDLE_EXTRA_SCORE), resultCode, data);
+    protected void onPause() {
+        super.onPause();
+    }
 
-        if (GAME_ACTIVITY_REQUEST_CODE == requestCode && RESULT_OK == resultCode) {
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+    @SuppressLint("StringFormatInvalid")
+    private void greetUser() {
+        String firstName = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_NAME, null);
+        int score = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getInt(SHARED_PREF_USER_INFO_SCORE, -1); // -1 pour verifier si la case n'est pas null
+
+        if (firstName != null) {
+            if (score != -1) {
+                mGreetingTextView.setText(getString(R.string.welcome_back_with_score) +" "+ firstName + " " + score);
+            } else {
+                mGreetingTextView.setText(getString(R.string.welcome_back) + " " + firstName);
+            }
+            mNameEditText.setText(firstName);
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (REQUEST_CODE_GAME_ACTIVITY == requestCode && RESULT_OK == resultCode) {
             // Fetch the score from the Intent
             int score = data.getIntExtra(GameActivity.BUNDLE_EXTRA_SCORE, 0);
+
+            //on change la valeur dans les shared preferences
+            getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE)
+                    .edit()
+                    .putInt(SHARED_PREF_USER_INFO_SCORE, score)
+                    .apply();
+            greetUser();
         }
     }
 }

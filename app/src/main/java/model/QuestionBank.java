@@ -64,5 +64,11 @@ public class QuestionBank {
         mNextQuestionIndex = nextQuestionIndex;
     }
 
-
+    @Override
+    public String toString() {
+        return "QuestionBank{" +
+                "mQuestionList=" + mQuestionList +
+                ", mNextQuestionIndex=" + mNextQuestionIndex +
+                '}';
+    }
 }

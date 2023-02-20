@@ -15,7 +15,7 @@ public class User {
         ScoreJoueur = scoreJoueur;
     }
 
-    public String getFisrtName() {
+    public String getFirstName() {
         return setFisrtName;
     }
 
