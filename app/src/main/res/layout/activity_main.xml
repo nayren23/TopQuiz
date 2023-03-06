@@ -56,10 +56,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_launcher_foreground"
         tools:ignore="VectorDrawableCompat" />
+
     <Button
         android:id="@+id/button_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="130dp"
         android:layout_weight="0"
         android:text="Capture Image" />
 </LinearLayout>
