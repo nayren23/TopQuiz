@@ -14,7 +14,7 @@
         android:id="@+id/main_textview_greeting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome! What's your name?"
+        android:text="Welcome! What's your name? 🙄"
 
         android:layout_gravity="center"
         android:gravity="left"
@@ -37,8 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_margin="16dp"
-
-        android:text="Let's play"
+        android:text="Let's play 😉"
 
         />
 
@@ -61,7 +60,7 @@
         android:id="@+id/button_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="130dp"
+        android:layout_marginLeft="100dp"
         android:layout_weight="0"
-        android:text="Capture Image" />
+        android:text="Prendre une Photo 😍" />
 </LinearLayout>

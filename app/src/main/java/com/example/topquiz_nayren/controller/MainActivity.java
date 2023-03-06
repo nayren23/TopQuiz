@@ -77,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
         mPlayButton.setEnabled(false);
         mUser = new User();
 
-
         /**
          * il faut pouvoir être notifié lorsque l'utilisateur commence à saisir du texte
          * dans le champ EditText correspondant
@@ -148,9 +147,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void captureImage() {
-// Create an implicit intent, for image capture.
+        // Create an implicit intent, for image capture.
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-// Start camera and wait for the results.
+        // Start camera and wait for the results.
         this.startActivityForResult(intent, REQUEST_ID_IMAGE_CAPTURE);
     }
 
