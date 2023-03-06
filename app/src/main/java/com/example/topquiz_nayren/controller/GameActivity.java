@@ -34,25 +34,20 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private static final String BUNDLE_STATE_QUESTION_BANK = "BUNDLE_STATE_QUESTION_BANK";
 
     public static final String BUNDLE_STATE_QUESTION = "BUNDLE_STATE_QUESTION";
+
     public static final String RESULT_SCORE = "RESULT_SCORE";
     private TextView mQuestionsTextView;
     private Button mAnswerButton1;
     private Button mAnswerButton2;
     private Button mAnswerButton3;
     private Button mAnswerButton4;
-
     private int mScore;
     private QuestionBank getQuestionBank  ;
-
     private final QuestionBank mQuestionBank = generateQuestionBank();
-
     private Question questionActuelle;
-
     private ArrayList<Integer> listetemporaireQuestionUtilise = new ArrayList<Integer>();
-
     private boolean mEnableTouchEvents;
     private int mRemainingQuestionCount;
-
     public static final String BUNDLE_EXTRA_SCORE = "BUNDLE_EXTRA_SCORE";
 
     @Override
@@ -272,5 +267,4 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     protected void onDestroy() {
         super.onDestroy();
     }
-
 }

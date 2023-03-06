@@ -21,10 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
-
 import com.example.topquiz_nayren.R;
-
 import model.User;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,8 +31,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView mGreetingTextView;
     private EditText mNameEditText;
     private Button mPlayButton;
-
-    private Button mPrendrePhoto;
 
     private TextView mwelcome_back_with_score;
 
@@ -48,8 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_CAMERA_ACTIVITY = 45;
 
     private Button buttonImage;
-    private Button buttonVideo;
-    private VideoView videoView;
     private ImageView imageView;
     private static final int REQUEST_ID_READ_WRITE_PERMISSION = 99;
     private static final int REQUEST_ID_IMAGE_CAPTURE = 100;
@@ -72,8 +65,6 @@ public class MainActivity extends AppCompatActivity {
         mGreetingTextView = findViewById(R.id.main_textview_greeting);
         mNameEditText =findViewById(R.id.main_edittext_name);
         mPlayButton = findViewById(R.id.main_button_play);
-        mPrendrePhoto = findViewById(R.id.button_image);
-
         mPlayButton.setEnabled(false);
         mUser = new User();
 
@@ -125,17 +116,9 @@ public class MainActivity extends AppCompatActivity {
         });
         greetUser();//pour que meme si on ferme l'app on garde en cache les infos de l'useur
 
-        mPrendrePhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(new Intent(MainActivity.this, CameraActivity.class), REQUEST_CODE_CAMERA_ACTIVITY);
-            }
-        });
 
         //Camera
         this.buttonImage = (Button) this.findViewById(R.id.button_image);
-        this.buttonVideo = (Button) this.findViewById(R.id.button_video);
-        this.videoView = (VideoView) this.findViewById(R.id.videoView);
         this.imageView = (ImageView) this.findViewById(R.id.imageView);
         this.buttonImage.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -145,14 +128,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
     private void captureImage() {
         // Create an implicit intent, for image capture.
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Start camera and wait for the results.
         this.startActivityForResult(intent, REQUEST_ID_IMAGE_CAPTURE);
     }
-
 
     @Override
     protected void onPause() {
@@ -203,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //Camera
-
         if (requestCode == REQUEST_ID_IMAGE_CAPTURE) {
             if (resultCode == RESULT_OK) {
                 Bitmap bp = (Bitmap) data.getExtras().get("data");
@@ -212,21 +192,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Action canceled", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this, "Action Failed", Toast.LENGTH_LONG).show();
-            }
-        } else if (requestCode == REQUEST_ID_VIDEO_CAPTURE) {
-            if (resultCode == RESULT_OK) {
-                Uri videoUri = data.getData();
-                Log.i("MyLog", "Video saved to: " + videoUri);
-                Toast.makeText(this, "Video saved to:\n" +
-                        videoUri, Toast.LENGTH_LONG).show();
-                this.videoView.setVideoURI(videoUri);
-                this.videoView.start();
-            } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "Action Cancelled.",
-                        Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, "Action Failed",
-                        Toast.LENGTH_LONG).show();
             }
         }
     }

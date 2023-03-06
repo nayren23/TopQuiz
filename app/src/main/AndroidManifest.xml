@@ -17,9 +17,6 @@
             android:name=".controller.GameActivity"
             android:exported="false" />
         <activity
-            android:name=".controller.CameraActivity"
-            android:exported="false" />
-        <activity
             android:name=".controller.MainActivity"
             android:exported="true">
             <intent-filter>
