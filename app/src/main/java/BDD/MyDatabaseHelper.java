@@ -22,7 +22,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     // Database Name
     private static final String DATABASE_NAME = "User_Manager";
 
-    // Table name: Note.
+    // Table name: User.
     private static final String TABLE_USER = "User";
 
     //On creer la structure de la table
@@ -60,7 +60,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     // If User table has no data
     // default, Insert 2 records.
-    public void createDefaultNotesIfNeed()  {
+    public void createDefaultUsersIfNeed()  {
         int count = this.getUserCount();
         if(count ==0 ) {
             User user1 = new User("User1" , 2);
@@ -69,8 +69,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     }
 
     //On ajoute un User
-    public void addNote(User user) {
-        Log.i(TAG, "MyDatabaseHelper.addNote ... " + user.getFirstName()); // affiche un message dans la console android
+    public void addUser(User user) {
+        Log.i(TAG, "MyDatabaseHelper.addUser ... " + user.getFirstName()); // affiche un message dans la console android
 
         SQLiteDatabase db = this.getWritableDatabase();//ouvre une connexion à la base de données en mode écriture
 
@@ -88,7 +88,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public User getUser(int id) {
-        Log.i(TAG, "MyDatabaseHelper.getNote ... " + id);
+        Log.i(TAG, "MyDatabaseHelper.getUser ... " + id);
 
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -99,7 +99,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             cursor.moveToFirst();
 
         User user = new User(Integer.parseInt(cursor.getString(0)), cursor.getString(1), Integer.parseInt(cursor.getString(2)));
-        // return note
+        // return User
         return user;
     }
 
@@ -116,16 +116,16 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-                User note = new User();
-                note.setUserId(Integer.parseInt(cursor.getString(0)));
-                note.setFirstName(cursor.getString(1));
-                note.setScoreJoueur(Integer.parseInt(cursor.getString(2)));
-                // Adding note to list
-                userList.add(note);
+                User user = new User();
+                user.setUserId(Integer.parseInt(cursor.getString(0)));
+                user.setFirstName(cursor.getString(1));
+                user.setScoreJoueur(Integer.parseInt(cursor.getString(2)));
+                // Adding user to list
+                userList.add(user);
             } while (cursor.moveToNext());
         }
 
-        // return note list
+        // return user list
         return userList;
     }
 
@@ -144,8 +144,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         return count;
     }
 
-    public int updateNote(User user) {
-        Log.i(TAG, "MyDatabaseHelper.updateNote ... "  + user.getFirstName());
+    public int updateUser(User user) {
+        Log.i(TAG, "MyDatabaseHelper.updateUser ... "  + user.getFirstName());
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -159,12 +159,11 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void deleteUser(User user) {
-        Log.i(TAG, "MyDatabaseHelper.updateNote ... " + user.getFirstName());
+        Log.i(TAG, "MyDatabaseHelper.updateUser ... " + user.getFirstName());
 
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_USER, COLUMN_USER_ID + " = ?",
                 new String[] { String.valueOf(user.getUserId()) });
         db.close();
     }
-
 }
