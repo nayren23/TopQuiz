@@ -6,13 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import model.User;
 
-public class MyDatabaseHelper extends SQLiteOpenHelper {
+public class DatabaseUser extends SQLiteOpenHelper {
 
     private static final String TAG = "SQLite";
 
@@ -30,7 +28,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_USER_FisrtName ="User_FisrtName";
     private static final String COLUMN_USER_ScoreJoueur = "User_ScoreJoueur";
 
-    public MyDatabaseHelper(Context context)  {
+    public DatabaseUser(Context context)  {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
