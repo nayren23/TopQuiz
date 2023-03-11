@@ -32,7 +32,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private static final String BUNDLE_STATE_SCORE = "BUNDLE_STATE_SCORE";
     private static final String BUNDLE_STATE_QUESTION_COUNT = "BUNDLE_STATE_QUESTION_COUNT";
     private static final String BUNDLE_STATE_QUESTION_BANK = "BUNDLE_STATE_QUESTION_BANK";
-
     public static final String BUNDLE_STATE_QUESTION = "BUNDLE_STATE_QUESTION";
 
     public static final String RESULT_SCORE = "RESULT_SCORE";
@@ -70,7 +69,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mAnswerButton4.setOnClickListener(this);
 
         getQuestionBank = mQuestionBank;
-        System.out.println("liste question départ " +mQuestionBank );
         this.questionActuelle= this.getQuestionBank.getNextQuestion();
         run();
 
@@ -148,7 +146,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         return mEnableTouchEvents && super.dispatchTouchEvent(ev);
     }
 
-
     @Override
     public void onClick(View v) {
         int index;
@@ -167,7 +164,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         //verification reponses
         if(answerVerification(index)){
             this.mScore++;
-            System.out.println("le score est de : " + this.mScore);
             Toast.makeText(this, "Correct 😍" + this.mScore , Toast.LENGTH_SHORT).show();
         }
         else{
@@ -175,10 +171,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
         mEnableTouchEvents = false;
         suppressionQuestionsListe();
-
         run();
     }
-
 
     /**
      * Retourne un boolean si l'useaur a fait le bon choix
@@ -189,6 +183,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         return this.questionActuelle.getAnswerIndex() == choixUseur;
     }
 
+    /**
+     * Fait l'affichage de la fin du jeux avec l'afficage du score
+     */
     private void endGame() {
         // No question left, end the game
         Toast.makeText(this, "FIN DU JEUX 😢", Toast.LENGTH_LONG).show();
@@ -210,22 +207,17 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mEnableTouchEvents = true;
 
         mRemainingQuestionCount--;
-        System.out.println("il reste " + mRemainingQuestionCount +"questions");
         if (mRemainingQuestionCount <= 0) {
             endGame();
         } else {
-            System.out.println("je passe dans la prochaine question");
-            System.out.println("la liste des questions: " + getQuestionBank.getNextQuestion() );
             displayQuestion( this.questionActuelle);
         }
     }
 
     public  void suppressionQuestionsListe(){
         this.listetemporaireQuestionUtilise.add(this.questionActuelle.getIndiceTemporaire());
-
         this.getQuestionBank.questionBankShuflle(this.getQuestionBank.getQuestionList());//on mélange les questions
         this.questionActuelle = this.getQuestionBank.getNextQuestion();//on choisit la prochaine question
-
 
         //verification de si on a deja poser la question
         while(this.listetemporaireQuestionUtilise.contains(this.questionActuelle.getIndiceTemporaire())){
@@ -236,7 +228,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-
         outState.putInt(BUNDLE_STATE_SCORE, mScore);
         outState.putInt(BUNDLE_STATE_QUESTION_COUNT, mRemainingQuestionCount);
         outState.putSerializable(BUNDLE_STATE_QUESTION_BANK, (Serializable) getQuestionBank);
