@@ -1,20 +1,15 @@
 package com.example.topquiz_nayren.controller;
 
-import static com.example.topquiz_nayren.controller.GameActivity.BUNDLE_EXTRA_SCORE;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,7 +19,6 @@ import android.widget.Toast;
 import com.example.topquiz_nayren.R;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -53,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
     // Is a simple file name.
     // Note!! Do not allow the path.
     private String simpleFileName = "note.txt";
+
+    //Save BDD
+    private Button saveBddBouton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,11 +64,13 @@ public class MainActivity extends AppCompatActivity {
          * Un Widget doit avoir un attribut id dans le layout pour être référençable dans
          * l’Activity.
          */
-        mGreetingTextView = findViewById(R.id.main_textview_greeting);
-        mNameEditText =findViewById(R.id.main_edittext_name);
-        mPlayButton = findViewById(R.id.main_button_play);
+        this.mGreetingTextView = findViewById(R.id.main_textview_greeting);
+        this.mNameEditText =findViewById(R.id.main_edittext_name);
+        this.mPlayButton = findViewById(R.id.main_button_play);
         this.saveButton = (Button) this.findViewById(R.id.button_save);
-        mPlayButton.setEnabled(false);
+        this.saveBddBouton = (Button) this.findViewById(R.id.button_save_bdd);
+        this.mPlayButton.setEnabled(false);
+
         mUser = new User();
 
         /**
@@ -110,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mUser.setFisrtName(mNameEditText.getText().toString()); //On change le prénom du joueur
+                mUser.setFirstName(mNameEditText.getText().toString()); //On change le prénom du joueur
 
                 // The user just clicked
                 getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE)
@@ -193,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
             // Close the input stream.
             in.close();
         } catch (Exception e) {
-            Toast.makeText(this,"Error:"+ e.getMessage(),Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Error Impossible c'est une nouvelle instance de l'app:"+ e.getMessage(),Toast.LENGTH_SHORT).show();
         }
     }
 
