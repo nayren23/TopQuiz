@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">TopQuiz_Nayren</string>
+    <string name="welcome_back_with_score">Welcome back we have some missions for you</string>
+    <string name="welcome_back">Welcome</string>
+</resources>
