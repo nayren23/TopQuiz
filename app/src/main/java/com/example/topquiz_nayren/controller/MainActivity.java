@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,7 +24,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 
+import BDD.DatabaseUser;
 import model.User;
 
 public class MainActivity extends AppCompatActivity {
@@ -72,6 +75,11 @@ public class MainActivity extends AppCompatActivity {
         this.mPlayButton.setEnabled(false);
 
         mUser = new User();
+        //On crer la BDD user
+        DatabaseUser dbUser = new DatabaseUser(this);
+        dbUser.createDefaultUsersIfNeed();
+        dbUser.addUser(mUser);
+        //List<User> userList = dbUser.getAllUser();
 
         /**
          * il faut pouvoir être notifié lorsque l'utilisateur commence à saisir du texte
@@ -110,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mUser.setFirstName(mNameEditText.getText().toString()); //On change le prénom du joueur
+                dbUser.updateUser(mUser);
 
                 // The user just clicked
                 getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE)
@@ -219,8 +228,15 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("StringFormatInvalid")
     private void greetUser() {
-        String firstName = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_NAME, null);
-        int score = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getInt(SHARED_PREF_USER_INFO_SCORE, -1); // -1 pour verifier si la case n'est pas null
+        //Avec les getSharedPreferences
+        // String firstName = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_NAME, null);
+        // int score = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getInt(SHARED_PREF_USER_INFO_SCORE, -1); // -1 pour verifier si la case n'est pas null
+
+        //Avec recuperation des infis de la BDD
+        DatabaseUser dbUser = new DatabaseUser(this);
+        User userBDD =  dbUser.getUser(this.mUser.getUserId());
+        String firstName = userBDD.getFirstName();
+        int score = userBDD.getScoreJoueur();
 
         if (firstName != null) {
             if (score != -1) {

@@ -12,7 +12,7 @@ public class User implements Serializable {
     private int ScoreJoueur =0;
 
     public User() {
-
+        this.UserId++;
     }
     public User(String fisrtName, int scoreJoueur) {
         FirstName = fisrtName;

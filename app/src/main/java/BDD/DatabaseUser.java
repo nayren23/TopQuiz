@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import model.User;
 
+//Il n'y a qu'une seule bdd dans le téléphone, les new sont la pour instancier la connexion à cette BDD
 public class DatabaseUser extends SQLiteOpenHelper {
 
     private static final String TAG = "SQLite";
