@@ -1,11 +1,29 @@
 package model;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
 
     //m signifie member
-    private String setFisrtName;
 
+    private int UserId;
+
+    private String FirstName;
     private int ScoreJoueur =0;
+
+    public User() {
+        this.UserId++;
+    }
+    public User(String fisrtName, int scoreJoueur) {
+        FirstName = fisrtName;
+        ScoreJoueur = scoreJoueur;
+    }
+
+    public User(int userId, String fisrtName, int scoreJoueur) {
+        UserId = userId;
+        FirstName = fisrtName;
+        ScoreJoueur = scoreJoueur;
+    }
 
     public int getScoreJoueur() {
         return ScoreJoueur;
@@ -15,11 +33,21 @@ public class User {
         ScoreJoueur = scoreJoueur;
     }
 
+
     public String getFirstName() {
-        return setFisrtName;
+        return FirstName;
+    }
+    public void setFirstName(String firstName) {
+        FirstName = firstName;
     }
 
-    public void setFisrtName(String fisrtName) {
-        setFisrtName = fisrtName;
+    public int getUserId() {
+        return UserId;
     }
+
+    public void setUserId(int userId) {
+        UserId = userId;
+    }
+
+
 }
